@@ -1,0 +1,73 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { Profile } from '../generated/prisma/enums';
+
+@ApiTags('users')
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Criar um novo usuário' })
+  @ApiResponse({ status: 201, description: 'Usuário criado com sucesso.' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+
+  @Get()
+  @ApiBearerAuth('token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Profile.ADMIN)
+  @ApiOperation({ summary: 'Listar todos os usuários' })
+  findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Get(':id')
+  @ApiBearerAuth('token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Profile.ADMIN)
+  @ApiOperation({ summary: 'Buscar um usuário pelo ID' })
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(+id);
+  }
+
+  @Patch(':id')
+  @ApiBearerAuth('token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Profile.ADMIN)
+  @ApiOperation({ summary: 'Atualizar um usuário' })
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth('token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Profile.ADMIN)
+  @ApiOperation({ summary: 'Remover um usuário' })
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
+  }
+}
