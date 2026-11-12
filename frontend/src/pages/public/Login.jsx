@@ -40,7 +40,7 @@ export function Login() {
     <main className="auth-page">
       <section className="auth-panel" aria-labelledby="login-title">
         <p className="eyebrow">Acesso</p>
-        <h1 id="login-title">Entrar no CineWeb</h1>
+        <h1 id="login-title">Entrar no Cinéfilos</h1>
         <p>Use uma conta admin para gerenciar filmes, salas, sessões e produtos.</p>
 
         <form className="auth-form" onSubmit={handleSubmit}>
