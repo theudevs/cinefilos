@@ -89,6 +89,7 @@ model Sessao {
   sala   Sala @relation(fields: [salaId], references: [id])
 
   ingressos Ingresso[]
+  ocupacoes OcupacaoPoltrona[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -102,6 +103,7 @@ model Poltrona {
   sala   Sala @relation(fields: [salaId], references: [id])
 
   ingressos Ingresso[]
+  ocupacoes OcupacaoPoltrona[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -138,9 +140,28 @@ model Pedido {
 
   ingressos Ingresso[]
   produtos  PedidoProduto[]
+  ocupacoes OcupacaoPoltrona[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model OcupacaoPoltrona {
+  id Int @id @default(autoincrement())
+
+  pedidoId Int
+  pedido   Pedido @relation(fields: [pedidoId], references: [id])
+
+  sessaoId Int
+  sessao   Sessao @relation(fields: [sessaoId], references: [id])
+
+  poltronaId Int
+  poltrona   Poltrona @relation(fields: [poltronaId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([sessaoId, poltronaId])
+  @@index([pedidoId])
 }
 
 model Produto {

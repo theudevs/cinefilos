@@ -53,6 +53,11 @@ export type Ingresso = Prisma.IngressoModel
  */
 export type Pedido = Prisma.PedidoModel
 /**
+ * Model OcupacaoPoltrona
+ * 
+ */
+export type OcupacaoPoltrona = Prisma.OcupacaoPoltronaModel
+/**
  * Model Produto
  * 
  */

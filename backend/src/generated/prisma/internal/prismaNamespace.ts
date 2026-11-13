@@ -404,6 +404,7 @@ export const ModelName = {
   Poltrona: 'Poltrona',
   Ingresso: 'Ingresso',
   Pedido: 'Pedido',
+  OcupacaoPoltrona: 'OcupacaoPoltrona',
   Produto: 'Produto',
   PedidoProduto: 'PedidoProduto'
 } as const
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "sala" | "filme" | "sessao" | "poltrona" | "ingresso" | "pedido" | "produto" | "pedidoProduto"
+    modelProps: "user" | "sala" | "filme" | "sessao" | "poltrona" | "ingresso" | "pedido" | "ocupacaoPoltrona" | "produto" | "pedidoProduto"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -943,6 +944,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OcupacaoPoltrona: {
+      payload: Prisma.$OcupacaoPoltronaPayload<ExtArgs>
+      fields: Prisma.OcupacaoPoltronaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OcupacaoPoltronaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OcupacaoPoltronaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>
+        }
+        findFirst: {
+          args: Prisma.OcupacaoPoltronaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OcupacaoPoltronaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>
+        }
+        findMany: {
+          args: Prisma.OcupacaoPoltronaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>[]
+        }
+        create: {
+          args: Prisma.OcupacaoPoltronaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>
+        }
+        createMany: {
+          args: Prisma.OcupacaoPoltronaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OcupacaoPoltronaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>[]
+        }
+        delete: {
+          args: Prisma.OcupacaoPoltronaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>
+        }
+        update: {
+          args: Prisma.OcupacaoPoltronaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>
+        }
+        deleteMany: {
+          args: Prisma.OcupacaoPoltronaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OcupacaoPoltronaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OcupacaoPoltronaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>[]
+        }
+        upsert: {
+          args: Prisma.OcupacaoPoltronaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OcupacaoPoltronaPayload>
+        }
+        aggregate: {
+          args: Prisma.OcupacaoPoltronaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOcupacaoPoltrona>
+        }
+        groupBy: {
+          args: Prisma.OcupacaoPoltronaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OcupacaoPoltronaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OcupacaoPoltronaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OcupacaoPoltronaCountAggregateOutputType> | number
+        }
+      }
+    }
     Produto: {
       payload: Prisma.$ProdutoPayload<ExtArgs>
       fields: Prisma.ProdutoFieldRefs
@@ -1224,6 +1299,17 @@ export const PedidoScalarFieldEnum = {
 } as const
 
 export type PedidoScalarFieldEnum = (typeof PedidoScalarFieldEnum)[keyof typeof PedidoScalarFieldEnum]
+
+
+export const OcupacaoPoltronaScalarFieldEnum = {
+  id: 'id',
+  pedidoId: 'pedidoId',
+  sessaoId: 'sessaoId',
+  poltronaId: 'poltronaId',
+  createdAt: 'createdAt'
+} as const
+
+export type OcupacaoPoltronaScalarFieldEnum = (typeof OcupacaoPoltronaScalarFieldEnum)[keyof typeof OcupacaoPoltronaScalarFieldEnum]
 
 
 export const ProdutoScalarFieldEnum = {
@@ -1603,6 +1689,7 @@ export type GlobalOmitConfig = {
   poltrona?: Prisma.PoltronaOmit
   ingresso?: Prisma.IngressoOmit
   pedido?: Prisma.PedidoOmit
+  ocupacaoPoltrona?: Prisma.OcupacaoPoltronaOmit
   produto?: Prisma.ProdutoOmit
   pedidoProduto?: Prisma.PedidoProdutoOmit
 }

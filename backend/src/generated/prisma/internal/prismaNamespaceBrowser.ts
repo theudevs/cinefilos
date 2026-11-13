@@ -58,6 +58,7 @@ export const ModelName = {
   Poltrona: 'Poltrona',
   Ingresso: 'Ingresso',
   Pedido: 'Pedido',
+  OcupacaoPoltrona: 'OcupacaoPoltrona',
   Produto: 'Produto',
   PedidoProduto: 'PedidoProduto'
 } as const
@@ -172,6 +173,17 @@ export const PedidoScalarFieldEnum = {
 } as const
 
 export type PedidoScalarFieldEnum = (typeof PedidoScalarFieldEnum)[keyof typeof PedidoScalarFieldEnum]
+
+
+export const OcupacaoPoltronaScalarFieldEnum = {
+  id: 'id',
+  pedidoId: 'pedidoId',
+  sessaoId: 'sessaoId',
+  poltronaId: 'poltronaId',
+  createdAt: 'createdAt'
+} as const
+
+export type OcupacaoPoltronaScalarFieldEnum = (typeof OcupacaoPoltronaScalarFieldEnum)[keyof typeof OcupacaoPoltronaScalarFieldEnum]
 
 
 export const ProdutoScalarFieldEnum = {

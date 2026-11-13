@@ -259,6 +259,7 @@ export type SessaoWhereInput = {
   filme?: Prisma.XOR<Prisma.FilmeScalarRelationFilter, Prisma.FilmeWhereInput>
   sala?: Prisma.XOR<Prisma.SalaScalarRelationFilter, Prisma.SalaWhereInput>
   ingressos?: Prisma.IngressoListRelationFilter
+  ocupacoes?: Prisma.OcupacaoPoltronaListRelationFilter
 }
 
 export type SessaoOrderByWithRelationInput = {
@@ -273,6 +274,7 @@ export type SessaoOrderByWithRelationInput = {
   filme?: Prisma.FilmeOrderByWithRelationInput
   sala?: Prisma.SalaOrderByWithRelationInput
   ingressos?: Prisma.IngressoOrderByRelationAggregateInput
+  ocupacoes?: Prisma.OcupacaoPoltronaOrderByRelationAggregateInput
 }
 
 export type SessaoWhereUniqueInput = Prisma.AtLeast<{
@@ -290,6 +292,7 @@ export type SessaoWhereUniqueInput = Prisma.AtLeast<{
   filme?: Prisma.XOR<Prisma.FilmeScalarRelationFilter, Prisma.FilmeWhereInput>
   sala?: Prisma.XOR<Prisma.SalaScalarRelationFilter, Prisma.SalaWhereInput>
   ingressos?: Prisma.IngressoListRelationFilter
+  ocupacoes?: Prisma.OcupacaoPoltronaListRelationFilter
 }, "id">
 
 export type SessaoOrderByWithAggregationInput = {
@@ -331,6 +334,7 @@ export type SessaoCreateInput = {
   filme: Prisma.FilmeCreateNestedOneWithoutSessoesInput
   sala: Prisma.SalaCreateNestedOneWithoutSessoesInput
   ingressos?: Prisma.IngressoCreateNestedManyWithoutSessaoInput
+  ocupacoes?: Prisma.OcupacaoPoltronaCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoUncheckedCreateInput = {
@@ -343,6 +347,7 @@ export type SessaoUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   ingressos?: Prisma.IngressoUncheckedCreateNestedManyWithoutSessaoInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoUpdateInput = {
@@ -354,6 +359,7 @@ export type SessaoUpdateInput = {
   filme?: Prisma.FilmeUpdateOneRequiredWithoutSessoesNestedInput
   sala?: Prisma.SalaUpdateOneRequiredWithoutSessoesNestedInput
   ingressos?: Prisma.IngressoUpdateManyWithoutSessaoNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoUncheckedUpdateInput = {
@@ -366,6 +372,7 @@ export type SessaoUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingressos?: Prisma.IngressoUncheckedUpdateManyWithoutSessaoNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoCreateManyInput = {
@@ -568,6 +575,20 @@ export type SessaoUpdateOneRequiredWithoutIngressosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SessaoUpdateToOneWithWhereWithoutIngressosInput, Prisma.SessaoUpdateWithoutIngressosInput>, Prisma.SessaoUncheckedUpdateWithoutIngressosInput>
 }
 
+export type SessaoCreateNestedOneWithoutOcupacoesInput = {
+  create?: Prisma.XOR<Prisma.SessaoCreateWithoutOcupacoesInput, Prisma.SessaoUncheckedCreateWithoutOcupacoesInput>
+  connectOrCreate?: Prisma.SessaoCreateOrConnectWithoutOcupacoesInput
+  connect?: Prisma.SessaoWhereUniqueInput
+}
+
+export type SessaoUpdateOneRequiredWithoutOcupacoesNestedInput = {
+  create?: Prisma.XOR<Prisma.SessaoCreateWithoutOcupacoesInput, Prisma.SessaoUncheckedCreateWithoutOcupacoesInput>
+  connectOrCreate?: Prisma.SessaoCreateOrConnectWithoutOcupacoesInput
+  upsert?: Prisma.SessaoUpsertWithoutOcupacoesInput
+  connect?: Prisma.SessaoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SessaoUpdateToOneWithWhereWithoutOcupacoesInput, Prisma.SessaoUpdateWithoutOcupacoesInput>, Prisma.SessaoUncheckedUpdateWithoutOcupacoesInput>
+}
+
 export type SessaoCreateWithoutSalaInput = {
   horarioExibicao: Date | string
   valorInteira?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -576,6 +597,7 @@ export type SessaoCreateWithoutSalaInput = {
   updatedAt?: Date | string
   filme: Prisma.FilmeCreateNestedOneWithoutSessoesInput
   ingressos?: Prisma.IngressoCreateNestedManyWithoutSessaoInput
+  ocupacoes?: Prisma.OcupacaoPoltronaCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoUncheckedCreateWithoutSalaInput = {
@@ -587,6 +609,7 @@ export type SessaoUncheckedCreateWithoutSalaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   ingressos?: Prisma.IngressoUncheckedCreateNestedManyWithoutSessaoInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoCreateOrConnectWithoutSalaInput = {
@@ -637,6 +660,7 @@ export type SessaoCreateWithoutFilmeInput = {
   updatedAt?: Date | string
   sala: Prisma.SalaCreateNestedOneWithoutSessoesInput
   ingressos?: Prisma.IngressoCreateNestedManyWithoutSessaoInput
+  ocupacoes?: Prisma.OcupacaoPoltronaCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoUncheckedCreateWithoutFilmeInput = {
@@ -648,6 +672,7 @@ export type SessaoUncheckedCreateWithoutFilmeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   ingressos?: Prisma.IngressoUncheckedCreateNestedManyWithoutSessaoInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoCreateOrConnectWithoutFilmeInput = {
@@ -684,6 +709,7 @@ export type SessaoCreateWithoutIngressosInput = {
   updatedAt?: Date | string
   filme: Prisma.FilmeCreateNestedOneWithoutSessoesInput
   sala: Prisma.SalaCreateNestedOneWithoutSessoesInput
+  ocupacoes?: Prisma.OcupacaoPoltronaCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoUncheckedCreateWithoutIngressosInput = {
@@ -695,6 +721,7 @@ export type SessaoUncheckedCreateWithoutIngressosInput = {
   salaId: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedCreateNestedManyWithoutSessaoInput
 }
 
 export type SessaoCreateOrConnectWithoutIngressosInput = {
@@ -721,6 +748,7 @@ export type SessaoUpdateWithoutIngressosInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filme?: Prisma.FilmeUpdateOneRequiredWithoutSessoesNestedInput
   sala?: Prisma.SalaUpdateOneRequiredWithoutSessoesNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoUncheckedUpdateWithoutIngressosInput = {
@@ -732,6 +760,69 @@ export type SessaoUncheckedUpdateWithoutIngressosInput = {
   salaId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedUpdateManyWithoutSessaoNestedInput
+}
+
+export type SessaoCreateWithoutOcupacoesInput = {
+  horarioExibicao: Date | string
+  valorInteira?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  valorMeia?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  filme: Prisma.FilmeCreateNestedOneWithoutSessoesInput
+  sala: Prisma.SalaCreateNestedOneWithoutSessoesInput
+  ingressos?: Prisma.IngressoCreateNestedManyWithoutSessaoInput
+}
+
+export type SessaoUncheckedCreateWithoutOcupacoesInput = {
+  id?: number
+  horarioExibicao: Date | string
+  valorInteira?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  valorMeia?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  filmeId: number
+  salaId: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ingressos?: Prisma.IngressoUncheckedCreateNestedManyWithoutSessaoInput
+}
+
+export type SessaoCreateOrConnectWithoutOcupacoesInput = {
+  where: Prisma.SessaoWhereUniqueInput
+  create: Prisma.XOR<Prisma.SessaoCreateWithoutOcupacoesInput, Prisma.SessaoUncheckedCreateWithoutOcupacoesInput>
+}
+
+export type SessaoUpsertWithoutOcupacoesInput = {
+  update: Prisma.XOR<Prisma.SessaoUpdateWithoutOcupacoesInput, Prisma.SessaoUncheckedUpdateWithoutOcupacoesInput>
+  create: Prisma.XOR<Prisma.SessaoCreateWithoutOcupacoesInput, Prisma.SessaoUncheckedCreateWithoutOcupacoesInput>
+  where?: Prisma.SessaoWhereInput
+}
+
+export type SessaoUpdateToOneWithWhereWithoutOcupacoesInput = {
+  where?: Prisma.SessaoWhereInput
+  data: Prisma.XOR<Prisma.SessaoUpdateWithoutOcupacoesInput, Prisma.SessaoUncheckedUpdateWithoutOcupacoesInput>
+}
+
+export type SessaoUpdateWithoutOcupacoesInput = {
+  horarioExibicao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valorInteira?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  valorMeia?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  filme?: Prisma.FilmeUpdateOneRequiredWithoutSessoesNestedInput
+  sala?: Prisma.SalaUpdateOneRequiredWithoutSessoesNestedInput
+  ingressos?: Prisma.IngressoUpdateManyWithoutSessaoNestedInput
+}
+
+export type SessaoUncheckedUpdateWithoutOcupacoesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  horarioExibicao?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valorInteira?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  valorMeia?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  filmeId?: Prisma.IntFieldUpdateOperationsInput | number
+  salaId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ingressos?: Prisma.IngressoUncheckedUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoCreateManySalaInput = {
@@ -752,6 +843,7 @@ export type SessaoUpdateWithoutSalaInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filme?: Prisma.FilmeUpdateOneRequiredWithoutSessoesNestedInput
   ingressos?: Prisma.IngressoUpdateManyWithoutSessaoNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoUncheckedUpdateWithoutSalaInput = {
@@ -763,6 +855,7 @@ export type SessaoUncheckedUpdateWithoutSalaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingressos?: Prisma.IngressoUncheckedUpdateManyWithoutSessaoNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoUncheckedUpdateManyWithoutSalaInput = {
@@ -793,6 +886,7 @@ export type SessaoUpdateWithoutFilmeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sala?: Prisma.SalaUpdateOneRequiredWithoutSessoesNestedInput
   ingressos?: Prisma.IngressoUpdateManyWithoutSessaoNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoUncheckedUpdateWithoutFilmeInput = {
@@ -804,6 +898,7 @@ export type SessaoUncheckedUpdateWithoutFilmeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingressos?: Prisma.IngressoUncheckedUpdateManyWithoutSessaoNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedUpdateManyWithoutSessaoNestedInput
 }
 
 export type SessaoUncheckedUpdateManyWithoutFilmeInput = {
@@ -823,10 +918,12 @@ export type SessaoUncheckedUpdateManyWithoutFilmeInput = {
 
 export type SessaoCountOutputType = {
   ingressos: number
+  ocupacoes: number
 }
 
 export type SessaoCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ingressos?: boolean | SessaoCountOutputTypeCountIngressosArgs
+  ocupacoes?: boolean | SessaoCountOutputTypeCountOcupacoesArgs
 }
 
 /**
@@ -846,6 +943,13 @@ export type SessaoCountOutputTypeCountIngressosArgs<ExtArgs extends runtime.Type
   where?: Prisma.IngressoWhereInput
 }
 
+/**
+ * SessaoCountOutputType without action
+ */
+export type SessaoCountOutputTypeCountOcupacoesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OcupacaoPoltronaWhereInput
+}
+
 
 export type SessaoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -859,6 +963,7 @@ export type SessaoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   filme?: boolean | Prisma.FilmeDefaultArgs<ExtArgs>
   sala?: boolean | Prisma.SalaDefaultArgs<ExtArgs>
   ingressos?: boolean | Prisma.Sessao$ingressosArgs<ExtArgs>
+  ocupacoes?: boolean | Prisma.Sessao$ocupacoesArgs<ExtArgs>
   _count?: boolean | Prisma.SessaoCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sessao"]>
 
@@ -904,6 +1009,7 @@ export type SessaoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   filme?: boolean | Prisma.FilmeDefaultArgs<ExtArgs>
   sala?: boolean | Prisma.SalaDefaultArgs<ExtArgs>
   ingressos?: boolean | Prisma.Sessao$ingressosArgs<ExtArgs>
+  ocupacoes?: boolean | Prisma.Sessao$ocupacoesArgs<ExtArgs>
   _count?: boolean | Prisma.SessaoCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SessaoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -921,6 +1027,7 @@ export type $SessaoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     filme: Prisma.$FilmePayload<ExtArgs>
     sala: Prisma.$SalaPayload<ExtArgs>
     ingressos: Prisma.$IngressoPayload<ExtArgs>[]
+    ocupacoes: Prisma.$OcupacaoPoltronaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1328,6 +1435,7 @@ export interface Prisma__SessaoClient<T, Null = never, ExtArgs extends runtime.T
   filme<T extends Prisma.FilmeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FilmeDefaultArgs<ExtArgs>>): Prisma.Prisma__FilmeClient<runtime.Types.Result.GetResult<Prisma.$FilmePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   sala<T extends Prisma.SalaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalaDefaultArgs<ExtArgs>>): Prisma.Prisma__SalaClient<runtime.Types.Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   ingressos<T extends Prisma.Sessao$ingressosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sessao$ingressosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IngressoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ocupacoes<T extends Prisma.Sessao$ocupacoesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sessao$ocupacoesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OcupacaoPoltronaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1787,6 +1895,30 @@ export type Sessao$ingressosArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.IngressoScalarFieldEnum | Prisma.IngressoScalarFieldEnum[]
+}
+
+/**
+ * Sessao.ocupacoes
+ */
+export type Sessao$ocupacoesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OcupacaoPoltrona
+   */
+  select?: Prisma.OcupacaoPoltronaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OcupacaoPoltrona
+   */
+  omit?: Prisma.OcupacaoPoltronaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OcupacaoPoltronaInclude<ExtArgs> | null
+  where?: Prisma.OcupacaoPoltronaWhereInput
+  orderBy?: Prisma.OcupacaoPoltronaOrderByWithRelationInput | Prisma.OcupacaoPoltronaOrderByWithRelationInput[]
+  cursor?: Prisma.OcupacaoPoltronaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OcupacaoPoltronaScalarFieldEnum | Prisma.OcupacaoPoltronaScalarFieldEnum[]
 }
 
 /**

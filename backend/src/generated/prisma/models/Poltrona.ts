@@ -222,6 +222,7 @@ export type PoltronaWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Poltrona"> | Date | string
   sala?: Prisma.XOR<Prisma.SalaScalarRelationFilter, Prisma.SalaWhereInput>
   ingressos?: Prisma.IngressoListRelationFilter
+  ocupacoes?: Prisma.OcupacaoPoltronaListRelationFilter
 }
 
 export type PoltronaOrderByWithRelationInput = {
@@ -232,6 +233,7 @@ export type PoltronaOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   sala?: Prisma.SalaOrderByWithRelationInput
   ingressos?: Prisma.IngressoOrderByRelationAggregateInput
+  ocupacoes?: Prisma.OcupacaoPoltronaOrderByRelationAggregateInput
 }
 
 export type PoltronaWhereUniqueInput = Prisma.AtLeast<{
@@ -246,6 +248,7 @@ export type PoltronaWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Poltrona"> | Date | string
   sala?: Prisma.XOR<Prisma.SalaScalarRelationFilter, Prisma.SalaWhereInput>
   ingressos?: Prisma.IngressoListRelationFilter
+  ocupacoes?: Prisma.OcupacaoPoltronaListRelationFilter
 }, "id" | "salaId_codigo">
 
 export type PoltronaOrderByWithAggregationInput = {
@@ -278,6 +281,7 @@ export type PoltronaCreateInput = {
   updatedAt?: Date | string
   sala: Prisma.SalaCreateNestedOneWithoutPoltronasInput
   ingressos?: Prisma.IngressoCreateNestedManyWithoutPoltronaInput
+  ocupacoes?: Prisma.OcupacaoPoltronaCreateNestedManyWithoutPoltronaInput
 }
 
 export type PoltronaUncheckedCreateInput = {
@@ -287,6 +291,7 @@ export type PoltronaUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   ingressos?: Prisma.IngressoUncheckedCreateNestedManyWithoutPoltronaInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedCreateNestedManyWithoutPoltronaInput
 }
 
 export type PoltronaUpdateInput = {
@@ -295,6 +300,7 @@ export type PoltronaUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sala?: Prisma.SalaUpdateOneRequiredWithoutPoltronasNestedInput
   ingressos?: Prisma.IngressoUpdateManyWithoutPoltronaNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUpdateManyWithoutPoltronaNestedInput
 }
 
 export type PoltronaUncheckedUpdateInput = {
@@ -304,6 +310,7 @@ export type PoltronaUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingressos?: Prisma.IngressoUncheckedUpdateManyWithoutPoltronaNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedUpdateManyWithoutPoltronaNestedInput
 }
 
 export type PoltronaCreateManyInput = {
@@ -438,11 +445,26 @@ export type PoltronaUpdateOneRequiredWithoutIngressosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PoltronaUpdateToOneWithWhereWithoutIngressosInput, Prisma.PoltronaUpdateWithoutIngressosInput>, Prisma.PoltronaUncheckedUpdateWithoutIngressosInput>
 }
 
+export type PoltronaCreateNestedOneWithoutOcupacoesInput = {
+  create?: Prisma.XOR<Prisma.PoltronaCreateWithoutOcupacoesInput, Prisma.PoltronaUncheckedCreateWithoutOcupacoesInput>
+  connectOrCreate?: Prisma.PoltronaCreateOrConnectWithoutOcupacoesInput
+  connect?: Prisma.PoltronaWhereUniqueInput
+}
+
+export type PoltronaUpdateOneRequiredWithoutOcupacoesNestedInput = {
+  create?: Prisma.XOR<Prisma.PoltronaCreateWithoutOcupacoesInput, Prisma.PoltronaUncheckedCreateWithoutOcupacoesInput>
+  connectOrCreate?: Prisma.PoltronaCreateOrConnectWithoutOcupacoesInput
+  upsert?: Prisma.PoltronaUpsertWithoutOcupacoesInput
+  connect?: Prisma.PoltronaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PoltronaUpdateToOneWithWhereWithoutOcupacoesInput, Prisma.PoltronaUpdateWithoutOcupacoesInput>, Prisma.PoltronaUncheckedUpdateWithoutOcupacoesInput>
+}
+
 export type PoltronaCreateWithoutSalaInput = {
   codigo: string
   createdAt?: Date | string
   updatedAt?: Date | string
   ingressos?: Prisma.IngressoCreateNestedManyWithoutPoltronaInput
+  ocupacoes?: Prisma.OcupacaoPoltronaCreateNestedManyWithoutPoltronaInput
 }
 
 export type PoltronaUncheckedCreateWithoutSalaInput = {
@@ -451,6 +473,7 @@ export type PoltronaUncheckedCreateWithoutSalaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   ingressos?: Prisma.IngressoUncheckedCreateNestedManyWithoutPoltronaInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedCreateNestedManyWithoutPoltronaInput
 }
 
 export type PoltronaCreateOrConnectWithoutSalaInput = {
@@ -495,6 +518,7 @@ export type PoltronaCreateWithoutIngressosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   sala: Prisma.SalaCreateNestedOneWithoutPoltronasInput
+  ocupacoes?: Prisma.OcupacaoPoltronaCreateNestedManyWithoutPoltronaInput
 }
 
 export type PoltronaUncheckedCreateWithoutIngressosInput = {
@@ -503,6 +527,7 @@ export type PoltronaUncheckedCreateWithoutIngressosInput = {
   salaId: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedCreateNestedManyWithoutPoltronaInput
 }
 
 export type PoltronaCreateOrConnectWithoutIngressosInput = {
@@ -526,6 +551,7 @@ export type PoltronaUpdateWithoutIngressosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sala?: Prisma.SalaUpdateOneRequiredWithoutPoltronasNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUpdateManyWithoutPoltronaNestedInput
 }
 
 export type PoltronaUncheckedUpdateWithoutIngressosInput = {
@@ -534,6 +560,57 @@ export type PoltronaUncheckedUpdateWithoutIngressosInput = {
   salaId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedUpdateManyWithoutPoltronaNestedInput
+}
+
+export type PoltronaCreateWithoutOcupacoesInput = {
+  codigo: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sala: Prisma.SalaCreateNestedOneWithoutPoltronasInput
+  ingressos?: Prisma.IngressoCreateNestedManyWithoutPoltronaInput
+}
+
+export type PoltronaUncheckedCreateWithoutOcupacoesInput = {
+  id?: number
+  codigo: string
+  salaId: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ingressos?: Prisma.IngressoUncheckedCreateNestedManyWithoutPoltronaInput
+}
+
+export type PoltronaCreateOrConnectWithoutOcupacoesInput = {
+  where: Prisma.PoltronaWhereUniqueInput
+  create: Prisma.XOR<Prisma.PoltronaCreateWithoutOcupacoesInput, Prisma.PoltronaUncheckedCreateWithoutOcupacoesInput>
+}
+
+export type PoltronaUpsertWithoutOcupacoesInput = {
+  update: Prisma.XOR<Prisma.PoltronaUpdateWithoutOcupacoesInput, Prisma.PoltronaUncheckedUpdateWithoutOcupacoesInput>
+  create: Prisma.XOR<Prisma.PoltronaCreateWithoutOcupacoesInput, Prisma.PoltronaUncheckedCreateWithoutOcupacoesInput>
+  where?: Prisma.PoltronaWhereInput
+}
+
+export type PoltronaUpdateToOneWithWhereWithoutOcupacoesInput = {
+  where?: Prisma.PoltronaWhereInput
+  data: Prisma.XOR<Prisma.PoltronaUpdateWithoutOcupacoesInput, Prisma.PoltronaUncheckedUpdateWithoutOcupacoesInput>
+}
+
+export type PoltronaUpdateWithoutOcupacoesInput = {
+  codigo?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sala?: Prisma.SalaUpdateOneRequiredWithoutPoltronasNestedInput
+  ingressos?: Prisma.IngressoUpdateManyWithoutPoltronaNestedInput
+}
+
+export type PoltronaUncheckedUpdateWithoutOcupacoesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  codigo?: Prisma.StringFieldUpdateOperationsInput | string
+  salaId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ingressos?: Prisma.IngressoUncheckedUpdateManyWithoutPoltronaNestedInput
 }
 
 export type PoltronaCreateManySalaInput = {
@@ -548,6 +625,7 @@ export type PoltronaUpdateWithoutSalaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingressos?: Prisma.IngressoUpdateManyWithoutPoltronaNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUpdateManyWithoutPoltronaNestedInput
 }
 
 export type PoltronaUncheckedUpdateWithoutSalaInput = {
@@ -556,6 +634,7 @@ export type PoltronaUncheckedUpdateWithoutSalaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingressos?: Prisma.IngressoUncheckedUpdateManyWithoutPoltronaNestedInput
+  ocupacoes?: Prisma.OcupacaoPoltronaUncheckedUpdateManyWithoutPoltronaNestedInput
 }
 
 export type PoltronaUncheckedUpdateManyWithoutSalaInput = {
@@ -572,10 +651,12 @@ export type PoltronaUncheckedUpdateManyWithoutSalaInput = {
 
 export type PoltronaCountOutputType = {
   ingressos: number
+  ocupacoes: number
 }
 
 export type PoltronaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ingressos?: boolean | PoltronaCountOutputTypeCountIngressosArgs
+  ocupacoes?: boolean | PoltronaCountOutputTypeCountOcupacoesArgs
 }
 
 /**
@@ -595,6 +676,13 @@ export type PoltronaCountOutputTypeCountIngressosArgs<ExtArgs extends runtime.Ty
   where?: Prisma.IngressoWhereInput
 }
 
+/**
+ * PoltronaCountOutputType without action
+ */
+export type PoltronaCountOutputTypeCountOcupacoesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OcupacaoPoltronaWhereInput
+}
+
 
 export type PoltronaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -604,6 +692,7 @@ export type PoltronaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   updatedAt?: boolean
   sala?: boolean | Prisma.SalaDefaultArgs<ExtArgs>
   ingressos?: boolean | Prisma.Poltrona$ingressosArgs<ExtArgs>
+  ocupacoes?: boolean | Prisma.Poltrona$ocupacoesArgs<ExtArgs>
   _count?: boolean | Prisma.PoltronaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["poltrona"]>
 
@@ -637,6 +726,7 @@ export type PoltronaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type PoltronaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sala?: boolean | Prisma.SalaDefaultArgs<ExtArgs>
   ingressos?: boolean | Prisma.Poltrona$ingressosArgs<ExtArgs>
+  ocupacoes?: boolean | Prisma.Poltrona$ocupacoesArgs<ExtArgs>
   _count?: boolean | Prisma.PoltronaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PoltronaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -651,6 +741,7 @@ export type $PoltronaPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     sala: Prisma.$SalaPayload<ExtArgs>
     ingressos: Prisma.$IngressoPayload<ExtArgs>[]
+    ocupacoes: Prisma.$OcupacaoPoltronaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1054,6 +1145,7 @@ export interface Prisma__PoltronaClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   sala<T extends Prisma.SalaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalaDefaultArgs<ExtArgs>>): Prisma.Prisma__SalaClient<runtime.Types.Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   ingressos<T extends Prisma.Poltrona$ingressosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Poltrona$ingressosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IngressoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ocupacoes<T extends Prisma.Poltrona$ocupacoesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Poltrona$ocupacoesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OcupacaoPoltronaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1510,6 +1602,30 @@ export type Poltrona$ingressosArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.IngressoScalarFieldEnum | Prisma.IngressoScalarFieldEnum[]
+}
+
+/**
+ * Poltrona.ocupacoes
+ */
+export type Poltrona$ocupacoesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OcupacaoPoltrona
+   */
+  select?: Prisma.OcupacaoPoltronaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OcupacaoPoltrona
+   */
+  omit?: Prisma.OcupacaoPoltronaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OcupacaoPoltronaInclude<ExtArgs> | null
+  where?: Prisma.OcupacaoPoltronaWhereInput
+  orderBy?: Prisma.OcupacaoPoltronaOrderByWithRelationInput | Prisma.OcupacaoPoltronaOrderByWithRelationInput[]
+  cursor?: Prisma.OcupacaoPoltronaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OcupacaoPoltronaScalarFieldEnum | Prisma.OcupacaoPoltronaScalarFieldEnum[]
 }
 
 /**
