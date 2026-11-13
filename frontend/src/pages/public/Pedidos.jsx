@@ -55,8 +55,10 @@ export function Pedidos() {
     try {
       const data = await listarPedidos(filmeId)
       setPedidos(data)
+      return true
     } catch (requestError) {
       setError(requestError.message || 'Não foi possível carregar os pedidos.')
+      return false
     } finally {
       setIsLoading(false)
     }
@@ -70,7 +72,14 @@ export function Pedidos() {
       await pagarPedido(id)
       await loadPedidos()
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível finalizar o pagamento.')
+      const message = requestError.message || 'Não foi possível finalizar o pagamento.'
+
+      if (requestError.status === 409) {
+        const reloaded = await loadPedidos()
+        if (reloaded) setError(message)
+      } else {
+        setError(message)
+      }
     } finally {
       setPayingPedidoId(null)
     }
@@ -90,7 +99,14 @@ export function Pedidos() {
       await cancelarPedido(id)
       await loadPedidos()
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível cancelar o pedido.')
+      const message = requestError.message || 'Não foi possível cancelar o pedido.'
+
+      if (requestError.status === 409) {
+        const reloaded = await loadPedidos()
+        if (reloaded) setError(message)
+      } else {
+        setError(message)
+      }
     } finally {
       setCancelingPedidoId(null)
     }
@@ -158,12 +174,15 @@ export function Pedidos() {
       )}
 
       <section className="orders-list" aria-label="Lista de pedidos">
+        {error && (
+          <p className="form-error" role="alert" aria-live="assertive">
+            {error}
+          </p>
+        )}
         {isLoading ? (
           <p className="empty-state">Carregando pedidos...</p>
-        ) : error ? (
-          <p className="form-error">{error}</p>
         ) : pedidos.length === 0 ? (
-          <p className="empty-state">Nenhum pedido encontrado.</p>
+          !error && <p className="empty-state">Nenhum pedido encontrado.</p>
         ) : (
           pedidos.map((pedido) => {
             const firstTicket = pedido.ingressos?.[0]

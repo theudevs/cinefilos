@@ -85,6 +85,16 @@ export function CheckoutIngressos() {
     [checkout.ingressos],
   )
 
+  const unavailableSelectedIds = useMemo(
+    () =>
+      new Set(
+        poltronas
+          .filter((poltrona) => !poltrona.disponivel && selectedSeatIds.has(poltrona.id))
+          .map((poltrona) => poltrona.id),
+      ),
+    [poltronas, selectedSeatIds],
+  )
+
   const rows = useMemo(() => {
     const grouped = groupSeats(poltronas)
 
@@ -156,13 +166,27 @@ export function CheckoutIngressos() {
             <span>Tela</span>
           </div>
 
-          <div className="checkout-seat-map" style={getSeatGridStyle(poltronas)} aria-label="Mapa de poltronas">
+          <div
+            className="checkout-seat-map"
+            style={getSeatGridStyle(poltronas)}
+            role="group"
+            aria-label="Mapa de poltronas"
+          >
             {rows.map(({ row, seats }) => (
-              <div key={row} className="checkout-seat-row">
+              <div key={row} className="checkout-seat-row" role="group" aria-label={`Fileira ${row}`}>
                 {seats.map((poltrona) => {
                   const isSelected = selectedSeat?.id === poltrona.id
                   const isInCart = selectedSeatIds.has(poltrona.id)
                   const isDisabled = !poltrona.disponivel || isInCart
+                  const seatState = !poltrona.disponivel
+                    ? isInCart
+                      ? 'ocupada, selecionada no pedido'
+                      : 'ocupada'
+                    : isInCart
+                      ? 'no pedido'
+                      : isSelected
+                        ? 'selecionada'
+                        : 'livre'
 
                   return (
                     <button
@@ -175,6 +199,8 @@ export function CheckoutIngressos() {
                         isSelected ? 'selected' : '',
                       ].join(' ')}
                       disabled={isDisabled}
+                      aria-label={`Poltrona ${poltrona.codigo}: ${seatState}`}
+                      aria-pressed={isSelected}
                       onClick={() => setSelectedSeat(poltrona)}
                     >
                       {poltrona.codigo}
@@ -195,6 +221,15 @@ export function CheckoutIngressos() {
 
         <aside className="checkout-side-panel">
           <h2>Adicionar ingresso</h2>
+
+          {unavailableSelectedIds.size > 0 && (
+            <div className="checkout-conflict" role="alert" aria-live="assertive">
+              <span>
+                Uma ou mais poltronas selecionadas não estão mais disponíveis. Remova as
+                poltronas indicadas antes de continuar.
+              </span>
+            </div>
+          )}
 
           <div className="selected-seat-box">
             <span>Poltrona</span>
@@ -223,17 +258,31 @@ export function CheckoutIngressos() {
             {checkout.ingressos.length === 0 ? (
               <p>Nenhum ingresso adicionado.</p>
             ) : (
-              checkout.ingressos.map((ingresso) => (
-                <div key={ingresso.poltronaId} className="cart-ticket-row">
-                  <div>
-                    <strong>Poltrona {ingresso.codigo}</strong>
-                    <span>{ingresso.tipo === 'MEIA' ? 'Meia' : 'Inteira'}</span>
+              checkout.ingressos.map((ingresso) => {
+                const isUnavailable = unavailableSelectedIds.has(ingresso.poltronaId)
+
+                return (
+                  <div
+                    key={ingresso.poltronaId}
+                    className={`cart-ticket-row ${isUnavailable ? 'unavailable' : ''}`}
+                  >
+                    <div>
+                      <strong>Poltrona {ingresso.codigo}</strong>
+                      <span>{ingresso.tipo === 'MEIA' ? 'Meia' : 'Inteira'}</span>
+                      {isUnavailable && (
+                        <span className="cart-ticket-status">Não está mais disponível</span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      aria-label={`Remover poltrona ${ingresso.codigo} do pedido`}
+                      onClick={() => removeIngresso(ingresso.poltronaId)}
+                    >
+                      Remover
+                    </button>
                   </div>
-                  <button type="button" onClick={() => removeIngresso(ingresso.poltronaId)}>
-                    Remover
-                  </button>
-                </div>
-              ))
+                )
+              })
             )}
           </div>
 
@@ -244,7 +293,7 @@ export function CheckoutIngressos() {
             <button
               type="button"
               className="primary-action"
-              disabled={checkout.ingressos.length === 0}
+              disabled={checkout.ingressos.length === 0 || unavailableSelectedIds.size > 0}
               onClick={() => navigate(`/checkout/${sessao.id}/produtos`)}
             >
               Avançar para produtos

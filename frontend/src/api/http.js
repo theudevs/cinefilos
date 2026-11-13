@@ -1,5 +1,15 @@
 const API_BASE_URL = 'http://localhost:3000'
 
+export class HttpError extends Error {
+  constructor(message, status, body = null) {
+    super(message)
+    this.name = 'HttpError'
+    this.status = status
+    this.statusCode = status
+    this.body = body
+  }
+}
+
 export async function http(path, options = {}) {
   const token = localStorage.getItem('cineweb_token')
   const headers = {
@@ -18,9 +28,10 @@ export async function http(path, options = {}) {
 
   if (!response.ok) {
     let errorMessage = `Erro na requisição ${path}`
+    let errorBody = null
 
     try {
-      const errorBody = await response.json()
+      errorBody = await response.json()
       errorMessage = Array.isArray(errorBody.message)
         ? errorBody.message.join(' ')
         : errorBody.message || errorMessage
@@ -34,7 +45,7 @@ export async function http(path, options = {}) {
       errorMessage = 'Sua sessão expirou. Faça login novamente para finalizar o pedido.'
     }
 
-    throw new Error(errorMessage)
+    throw new HttpError(errorMessage, response.status, errorBody)
   }
 
   if (response.status === 204) {

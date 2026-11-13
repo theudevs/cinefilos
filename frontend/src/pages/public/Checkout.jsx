@@ -97,6 +97,7 @@ export function Checkout() {
   const { checkout, total, clearCheckout } = useCheckout()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [hasConflict, setHasConflict] = useState(false)
   const [createdPedido, setCreatedPedido] = useState(null)
   const [metodoPagamento, setMetodoPagamento] = useState('PIX')
 
@@ -120,6 +121,7 @@ export function Checkout() {
 
   async function handleFinalize() {
     setError('')
+    setHasConflict(false)
     setIsSubmitting(true)
 
     try {
@@ -128,6 +130,7 @@ export function Checkout() {
       setCreatedPedido(pedidoPago)
       clearCheckout()
     } catch (requestError) {
+      setHasConflict(requestError.status === 409)
       setError(requestError.message || 'Não foi possível finalizar o pedido.')
     } finally {
       setIsSubmitting(false)
@@ -136,6 +139,7 @@ export function Checkout() {
 
   async function handleSaveOpen() {
     setError('')
+    setHasConflict(false)
     setIsSubmitting(true)
 
     try {
@@ -144,6 +148,7 @@ export function Checkout() {
       setCreatedPedido(pedido)
       clearCheckout()
     } catch (requestError) {
+      setHasConflict(requestError.status === 409)
       setError(requestError.message || 'Não foi possível salvar o pedido.')
     } finally {
       setIsSubmitting(false)
@@ -238,7 +243,7 @@ export function Checkout() {
           </div>
         </div>
 
-        <aside className="checkout-side-panel">
+        <aside className="checkout-side-panel" aria-busy={isSubmitting}>
           <h2>Pagamento</h2>
 
           <div className="payment-method-field">
@@ -256,6 +261,7 @@ export function Checkout() {
                     }`}
                     role="radio"
                     aria-checked={isSelected}
+                    disabled={isSubmitting}
                     onClick={() => setMetodoPagamento(method.value)}
                   >
                     <span className="payment-method-icon">
@@ -273,7 +279,24 @@ export function Checkout() {
             <strong>{formatCurrency(total)}</strong>
           </div>
 
-          {error && <span className="form-error">{error}</span>}
+          {error && (
+            <div
+              className={hasConflict ? 'checkout-conflict' : 'form-error'}
+              role="alert"
+              aria-live="assertive"
+            >
+              <span>{error}</span>
+              {hasConflict && (
+                <button
+                  type="button"
+                  className="secondary-dark-action"
+                  onClick={() => navigate(`/checkout/${currentSessaoId}/ingressos`)}
+                >
+                  Revisar poltronas
+                </button>
+              )}
+            </div>
+          )}
 
           <button
             type="button"
