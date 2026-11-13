@@ -48,14 +48,20 @@
 
 - Um pedido pode conter varios ingressos e varios produtos.
 - Cada ingresso relaciona uma sessao, uma poltrona e um tipo de ingresso.
-- A combinacao de sessao e poltrona deve ser unica para impedir venda duplicada.
-- A protecao contra duplicidade existe como regra da aplicacao e deve continuar respaldada por restricao no banco.
+- `Ingresso` preserva o historico da compra e nao e responsavel pela unicidade da poltrona ativa.
+- `OcupacaoPoltrona` representa a reserva ou venda ativa e possui restricao unica por `sessaoId` e `poltronaId` no banco.
+- Pedidos `ABERTO` e `PAGO` mantem suas ocupacoes. Pedidos `CANCELADO` nao mantem ocupacoes, mas seus ingressos historicos permanecem registrados.
+- A disponibilidade de poltronas e calculada a partir de `OcupacaoPoltrona`, e nao pela existencia de ingressos historicos.
+- A criacao do pedido, das ocupacoes, dos ingressos e dos produtos ocorre em uma unica transacao. Um conflito de ocupacao reverte toda a operacao e retorna HTTP `409`.
 - Os status de pedido sao `ABERTO`, `PAGO` e `CANCELADO`.
 - Um pedido `ABERTO` reserva suas poltronas.
 - Um pedido `PAGO` representa uma compra confirmada.
 - Um pedido `CANCELADO` libera suas poltronas.
-- Apenas pedidos abertos podem ser pagos ou cancelados.
+- As unicas transicoes permitidas sao `ABERTO` para `PAGO` e `ABERTO` para `CANCELADO`.
+- As transicoes sao condicionais ao estado `ABERTO`. Se outra operacao vencer a disputa ou o pedido ja estiver em estado terminal, a API retorna HTTP `409` sem sobrescrever o estado existente.
+- O pagamento mantem as ocupacoes. O cancelamento altera o status e remove as ocupacoes na mesma transacao.
 - Um usuario comum so pode pagar ou cancelar um pedido proprio. O administrador pode operar pedidos de qualquer usuario.
+- Administradores respeitam a mesma matriz de transicoes dos usuarios comuns.
 
 ### Produtos e valores
 
@@ -93,7 +99,7 @@
 - O banco utilizado e PostgreSQL, acessado por meio do Prisma.
 - O schema Prisma e as migrations representam a estrutura persistida do sistema.
 - Arquivos gerados pelo Prisma nao sao editados manualmente.
-- Restricoes importantes, como a unicidade da poltrona por sessao, devem permanecer no banco mesmo quando tambem validadas no service.
+- Restricoes importantes devem permanecer no banco mesmo quando tambem validadas no service. A unicidade de poltrona por sessao pertence a ocupacao ativa em `OcupacaoPoltrona`, enquanto `Ingresso` preserva o historico.
 - Dados sensiveis e credenciais permanecem em arquivos de ambiente que nao devem ser versionados.
 - O estado temporario do checkout no navegador nao substitui um pedido persistido no banco.
 
