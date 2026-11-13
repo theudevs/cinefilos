@@ -4,6 +4,15 @@ import { CreateSessoeDto } from './dto/create-sessoe.dto';
 import { FindSessoesQueryDto } from './dto/find-sessoes-query.dto';
 import { UpdateSessoeDto } from './dto/update-sessoe.dto';
 
+type PrismaWithOcupacaoPoltrona = {
+  ocupacaoPoltrona: {
+    findMany(args: {
+      where: { sessaoId: number };
+      select: { poltronaId: true };
+    }): Promise<Array<{ poltronaId: number }>>;
+  };
+};
+
 @Injectable()
 export class SessoesService {
   constructor(private prisma: PrismaService) {}
@@ -69,20 +78,15 @@ export class SessoesService {
       throw new NotFoundException('Sessão informada não existe.');
     }
 
-    const ingressosAtivos = await this.prisma.ingresso.findMany({
-      where: {
-        sessaoId: id,
-        pedido: {
-          status: {
-            not: 'CANCELADO',
-          },
-        },
-      },
+    const ocupacoes = await (
+      this.prisma as unknown as PrismaWithOcupacaoPoltrona
+    ).ocupacaoPoltrona.findMany({
+      where: { sessaoId: id },
       select: { poltronaId: true },
     });
 
     const poltronasOcupadas = new Set(
-      ingressosAtivos.map((ingresso) => ingresso.poltronaId),
+      ocupacoes.map((ocupacao) => ocupacao.poltronaId),
     );
 
     return sessao.sala.poltronas.map((poltrona) => ({

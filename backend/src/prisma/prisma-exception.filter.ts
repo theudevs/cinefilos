@@ -6,6 +6,10 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Prisma } from '../generated/prisma/client';
+import {
+  isOcupacaoPoltronaUniqueConflict,
+  OCUPACAO_POLTRONA_CONFLICT_MESSAGE,
+} from '../pedidos/ocupacao-poltrona-conflict';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaExceptionFilter implements ExceptionFilter {
@@ -26,7 +30,9 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       case 'P2002':
         return {
           statusCode: HttpStatus.CONFLICT,
-          message: `Já existe um registro com este valor: ${this.formatTarget(exception.meta?.target)}.`,
+          message: isOcupacaoPoltronaUniqueConflict(exception)
+            ? OCUPACAO_POLTRONA_CONFLICT_MESSAGE
+            : `Já existe um registro com este valor: ${this.formatTarget(exception.meta?.target)}.`,
         };
       case 'P2003':
         return {

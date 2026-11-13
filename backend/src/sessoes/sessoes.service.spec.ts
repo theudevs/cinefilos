@@ -1,18 +1,35 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { jest } from '@jest/globals';
+import { PrismaService } from '../prisma/prisma.service';
 import { SessoesService } from './sessoes.service';
 
 describe('SessoesService', () => {
-  let service: SessoesService;
+  it('calcula disponibilidade exclusivamente pelas ocupações ativas', async () => {
+    const sessaoFindUnique = jest.fn().mockResolvedValue({
+      id: 1,
+      sala: {
+        poltronas: [
+          { id: 10, codigo: 'A1' },
+          { id: 11, codigo: 'A2' },
+        ],
+      },
+    });
+    const ocupacaoFindMany = jest.fn().mockResolvedValue([{ poltronaId: 11 }]);
+    const ingressoFindMany = jest.fn();
+    const prisma = {
+      sessao: { findUnique: sessaoFindUnique },
+      ingresso: { findMany: ingressoFindMany },
+      ocupacaoPoltrona: { findMany: ocupacaoFindMany },
+    } as unknown as PrismaService;
+    const service = new SessoesService(prisma);
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [SessoesService],
-    }).compile();
-
-    service = module.get<SessoesService>(SessoesService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+    await expect(service.findPoltronas(1)).resolves.toEqual([
+      { id: 10, codigo: 'A1', disponivel: true },
+      { id: 11, codigo: 'A2', disponivel: false },
+    ]);
+    expect(ocupacaoFindMany).toHaveBeenCalledWith({
+      where: { sessaoId: 1 },
+      select: { poltronaId: true },
+    });
+    expect(ingressoFindMany).not.toHaveBeenCalled();
   });
 });

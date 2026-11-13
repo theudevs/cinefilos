@@ -71,6 +71,7 @@ export class PedidosController {
   @ApiBearerAuth('token')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Finalizar pagamento de um pedido aberto' })
+  @ApiResponse({ status: 409, description: 'Pedido não está mais em aberto.' })
   pay(@Param('id') id: string, @Req() request) {
     return this.pedidosService.pay(+id, request.user);
   }
@@ -80,6 +81,7 @@ export class PedidosController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Profile.ADMIN)
   @ApiOperation({ summary: 'Atualizar o status de um pedido' })
+  @ApiResponse({ status: 409, description: 'Transição de status inválida.' })
   update(@Param('id') id: string, @Body() updatePedidoDto: UpdatePedidoDto) {
     return this.pedidosService.update(+id, updatePedidoDto);
   }
@@ -88,6 +90,7 @@ export class PedidosController {
   @ApiBearerAuth('token')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Cancelar um pedido' })
+  @ApiResponse({ status: 409, description: 'Pedido não está mais em aberto.' })
   remove(@Param('id') id: string, @Req() request) {
     return this.pedidosService.remove(+id, request.user);
   }

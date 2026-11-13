@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -12,13 +13,29 @@ import {
 } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { StatusPedido, TipoIngresso } from '../generated/prisma/enums';
+import {
+  isOcupacaoPoltronaUniqueConflict,
+  OCUPACAO_POLTRONA_CONFLICT_MESSAGE,
+} from './ocupacao-poltrona-conflict';
+
+type OcupacaoPoltronaDelegate = {
+  create(args: {
+    data: { pedidoId: number; sessaoId: number; poltronaId: number };
+  }): Promise<unknown>;
+  deleteMany(args: { where: { pedidoId: number } }): Promise<{ count: number }>;
+};
+
+type PrismaWithOcupacaoPoltrona = {
+  ocupacaoPoltrona: OcupacaoPoltronaDelegate;
+};
+
+type AuthenticatedUser = { userId: number; profile: string };
 
 @Injectable()
 export class PedidosService {
   constructor(private prisma: PrismaService) {}
 
   private readonly includeRelations = {
-    user: true,
     ingressos: {
       include: {
         sessao: { include: { filme: true, sala: true } },
@@ -43,62 +60,91 @@ export class PedidosService {
       throw new BadRequestException('Usuário comprador não informado.');
     }
 
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
       throw new NotFoundException('Usuário informado não existe.');
     }
 
     this.validatePoltronasDuplicadas(createPedidoDto.ingressos);
-    await this.validatePoltronasDisponiveis(createPedidoDto.ingressos);
 
     const ingressos = await Promise.all(
       createPedidoDto.ingressos.map((ingresso) =>
         this.buildIngressoData(ingresso),
       ),
     );
-
     const produtos = await Promise.all(
       (createPedidoDto.produtos ?? []).map((produto) =>
         this.buildProdutoData(produto),
       ),
     );
-
     const valorTotal = [
       ...ingressos.map((ingresso) => ingresso.valor),
       ...produtos.map((produto) => produto.subtotal),
     ].reduce((total, valor) => total + valor, 0);
+    const ocupacoes = ingressos
+      .map(({ sessaoId, poltronaId }) => ({ sessaoId, poltronaId }))
+      .sort(
+        (first, second) =>
+          first.sessaoId - second.sessaoId ||
+          first.poltronaId - second.poltronaId,
+      );
 
-    return this.prisma.$transaction((prisma) =>
-      prisma.pedido.create({
-        data: {
-          userId,
-          status,
-          valorTotal,
-          metodoPagamento: createPedidoDto.metodoPagamento,
-          ingressos: { create: ingressos },
-          produtos: { create: produtos },
-        },
-        include: this.includeRelations,
-      }),
-    );
+    try {
+      return await this.prisma.$transaction(async (prisma) => {
+        const pedido = await prisma.pedido.create({
+          data: {
+            userId,
+            status,
+            valorTotal,
+            metodoPagamento: createPedidoDto.metodoPagamento,
+          },
+        });
+        const ocupacaoPoltrona = this.getOcupacaoPoltronaDelegate(prisma);
+
+        // A ordem determinística de aquisição das chaves reduz o risco de
+        // deadlock quando carrinhos se sobrepõem parcialmente.
+        for (const ocupacao of ocupacoes) {
+          await ocupacaoPoltrona.create({
+            data: { pedidoId: pedido.id, ...ocupacao },
+          });
+        }
+
+        await prisma.ingresso.createMany({
+          data: ingressos.map((ingresso) => ({
+            pedidoId: pedido.id,
+            ...ingresso,
+          })),
+        });
+
+        if (produtos.length > 0) {
+          await prisma.pedidoProduto.createMany({
+            data: produtos.map((produto) => ({
+              pedidoId: pedido.id,
+              ...produto,
+            })),
+          });
+        }
+
+        return prisma.pedido.findUniqueOrThrow({
+          where: { id: pedido.id },
+          include: this.includeRelations,
+        });
+      });
+    } catch (error) {
+      if (isOcupacaoPoltronaUniqueConflict(error)) {
+        throw new ConflictException(OCUPACAO_POLTRONA_CONFLICT_MESSAGE);
+      }
+
+      throw error;
+    }
   }
 
-  findAll(user?: { userId: number; profile: string }, filmeId?: number) {
+  findAll(user?: AuthenticatedUser, filmeId?: number) {
     return this.prisma.pedido.findMany({
       where: {
         userId: user?.profile === 'ADMIN' ? undefined : user?.userId,
-        ingressos: filmeId
-          ? {
-              some: {
-                sessao: {
-                  filmeId,
-                },
-              },
-            }
-          : undefined,
+        ingressos: filmeId ? { some: { sessao: { filmeId } } } : undefined,
       },
       include: this.includeRelations,
       orderBy: { createdAt: 'desc' },
@@ -113,52 +159,86 @@ export class PedidosService {
   }
 
   update(id: number, updatePedidoDto: UpdatePedidoDto) {
-    return this.prisma.pedido.update({
-      where: { id },
-      data: updatePedidoDto,
-      include: this.includeRelations,
-    });
+    if (!updatePedidoDto.status) {
+      return this.findOne(id);
+    }
+
+    return this.transitionStatus(
+      id,
+      updatePedidoDto.status,
+      { userId: 0, profile: 'ADMIN' },
+      'Você não pode alterar este pedido.',
+    );
   }
 
-  async pay(id: number, user?: { userId: number; profile: string }) {
-    const pedido = await this.prisma.pedido.findUniqueOrThrow({
-      where: { id },
-      select: { userId: true, status: true },
-    });
-
-    if (user?.profile !== 'ADMIN' && pedido.userId !== user?.userId) {
-      throw new ForbiddenException('Você não pode finalizar este pedido.');
-    }
-
-    if (pedido.status === 'CANCELADO') {
-      throw new BadRequestException('Não é possível pagar um pedido cancelado.');
-    }
-
-    return this.prisma.pedido.update({
-      where: { id },
-      data: { status: 'PAGO' },
-      include: this.includeRelations,
-    });
+  pay(id: number, user?: AuthenticatedUser) {
+    return this.transitionStatus(
+      id,
+      StatusPedido.PAGO,
+      user,
+      'Você não pode finalizar este pedido.',
+    );
   }
 
-  async remove(id: number, user?: { userId: number; profile: string }) {
-    const pedido = await this.prisma.pedido.findUniqueOrThrow({
+  remove(id: number, user?: AuthenticatedUser) {
+    return this.transitionStatus(
+      id,
+      StatusPedido.CANCELADO,
+      user,
+      'Você não pode cancelar este pedido.',
+    );
+  }
+
+  private async transitionStatus(
+    id: number,
+    destination: StatusPedido,
+    user: AuthenticatedUser | undefined,
+    forbiddenMessage: string,
+  ) {
+    const pedido = await this.prisma.pedido.findUnique({
       where: { id },
-      select: { userId: true, status: true },
+      select: { userId: true },
     });
 
+    if (!pedido) {
+      throw new NotFoundException('Pedido não encontrado.');
+    }
+
     if (user?.profile !== 'ADMIN' && pedido.userId !== user?.userId) {
-      throw new ForbiddenException('Você não pode cancelar este pedido.');
+      throw new ForbiddenException(forbiddenMessage);
     }
 
-    if (pedido.status !== 'ABERTO') {
-      throw new BadRequestException('Apenas pedidos em aberto podem ser cancelados.');
+    if (
+      destination !== StatusPedido.PAGO &&
+      destination !== StatusPedido.CANCELADO
+    ) {
+      throw new ConflictException(
+        'A transição solicitada não é permitida para o pedido.',
+      );
     }
 
-    return this.prisma.pedido.update({
-      where: { id },
-      data: { status: 'CANCELADO' },
-      include: this.includeRelations,
+    return this.prisma.$transaction(async (prisma) => {
+      const transition = await prisma.pedido.updateMany({
+        where: { id, status: StatusPedido.ABERTO },
+        data: { status: destination },
+      });
+
+      if (transition.count !== 1) {
+        throw new ConflictException(
+          'O pedido não está mais em aberto. Recarregue os dados e tente novamente.',
+        );
+      }
+
+      if (destination === StatusPedido.CANCELADO) {
+        await this.getOcupacaoPoltronaDelegate(prisma).deleteMany({
+          where: { pedidoId: id },
+        });
+      }
+
+      return prisma.pedido.findUniqueOrThrow({
+        where: { id },
+        include: this.includeRelations,
+      });
     });
   }
 
@@ -238,32 +318,7 @@ export class PedidosService {
     });
   }
 
-  private async validatePoltronasDisponiveis(
-    ingressos: CreatePedidoIngressoDto[],
-  ) {
-    const ingressosIndisponiveis = await this.prisma.ingresso.findMany({
-      where: {
-        OR: ingressos.map((ingresso) => ({
-          sessaoId: ingresso.sessaoId,
-          poltronaId: ingresso.poltronaId,
-        })),
-        pedido: {
-          status: {
-            not: 'CANCELADO',
-          },
-        },
-      },
-      include: { poltrona: true },
-    });
-
-    if (ingressosIndisponiveis.length > 0) {
-      const poltronas = ingressosIndisponiveis
-        .map((ingresso) => ingresso.poltrona.codigo)
-        .join(', ');
-
-      throw new BadRequestException(
-        `As seguintes poltronas já estão ocupadas: ${poltronas}.`,
-      );
-    }
+  private getOcupacaoPoltronaDelegate(client: unknown) {
+    return (client as PrismaWithOcupacaoPoltrona).ocupacaoPoltrona;
   }
 }
